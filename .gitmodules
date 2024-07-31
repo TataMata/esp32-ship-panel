@@ -4,3 +4,9 @@
 [submodule "components/lvgl"]
 	path = components/lvgl
 	url = https://github.com/lvgl/lvgl.git
+[submodule "components/lvglpp"]
+	path = components/lvglpp
+	url = https://github.com/vpaeder/lvglpp.git
+[submodule "loki-lib"]
+	path = loki-lib
+	url = https://github.com/snaewe/loki-lib.git

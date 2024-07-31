@@ -25,7 +25,7 @@ idf_build_set_property(COMPILE_OPTIONS "-Wno-unused-function" APPEND)
 # Trouble unless you know what you are doing
 idf_build_set_property(COMPILE_OPTIONS "-Wno-pointer-arith" APPEND) 
 
-project(ESP32-TUX)
+project(eps32-Ship-panel)
 
 # Enable colors for compile output
 idf_build_set_property(COMPILE_OPTIONS "-fdiagnostics-color=always" APPEND)

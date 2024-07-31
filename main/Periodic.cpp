@@ -22,38 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "Periodic.hpp"
+#include <hal/lv_hal_tick.h>
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+using namespace ship;
 
-#include "esp_event.h"
-//#include "esp_timer.h"
+#define LV_TICK_PERIOD_MS 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
-
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
-
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
-
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
-};
-
-#ifdef __cplusplus
+static void lv_tick_task(void *arg) {
+//   (void)arg;
+  lv_tick_inc(LV_TICK_PERIOD_MS);
 }
-#endif
 
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+Periodic::Periodic() : _timer(nullptr) {
+  /* Create and start a periodic timer interrupt to call lv_tick_inc */
+  const esp_timer_create_args_t lv_periodic_timer_args = {
+      .callback = &lv_tick_task,
+      .arg = NULL,
+      .dispatch_method = ESP_TIMER_TASK,
+      .name = "periodic_gui",
+      .skip_unhandled_events = true};
+
+  ESP_ERROR_CHECK(esp_timer_create(&lv_periodic_timer_args, &_timer));
+  ESP_ERROR_CHECK(esp_timer_start_periodic(_timer, LV_TICK_PERIOD_MS * 1000));
+}
+
+Periodic::~Periodic() {
+  if (_timer)
+    esp_timer_delete(_timer);
+}

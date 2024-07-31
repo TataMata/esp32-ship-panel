@@ -22,38 +22,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef __DISPLAY_HPP
+#define __DISPLAY_HPP
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+#include <memory>
+#include "device_conf.hpp"
+#include <loki/Singleton.h>
+#include <lvgl.h>
 
-#include "esp_event.h"
-//#include "esp_timer.h"
+// class Preferences;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace ship {
 
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
+class Lcd;
+class Periodic;
 
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
+/**
+ * Display class is meant to be a singleton and to manage the display - lvgl and
+ * lcd
+ */
 
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
+class Display {
+public:
+  const uint16_t screenWidth = TFT_WIDTH;
+  const uint16_t screenHeight = TFT_HEIGHT;
 
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
+  static Display &instance();
+  esp_err_t init(const std::shared_ptr<Lcd> &tft);
+
+private:
+  Display();
+  ~Display() = default;
+  static void flush(lv_disp_drv_t *disp, const lv_area_t *area,
+                    lv_color_t *color_p);
+  static void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
+
+  lv_disp_t *disp;
+  std::shared_ptr<Lcd> _lcd;
+  std::unique_ptr<Periodic> _periodic;
+  lv_disp_draw_buf_t draw_buf;
+
+  friend struct Loki::CreateStatic<Display>;
 };
 
-#ifdef __cplusplus
-}
-#endif
+} // namespace ship
 
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+#endif // __DISPLAY_HPP

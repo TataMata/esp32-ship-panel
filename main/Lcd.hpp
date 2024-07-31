@@ -22,38 +22,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef __LCD_HPP
+#define __LCD_HPP
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+#include "device_conf.hpp"
+#include <lvgl.h>
 
-#include "esp_event.h"
-//#include "esp_timer.h"
+namespace ship {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Lcd {
+public:
+  Lcd();
+  ~Lcd() = default;
 
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
+  void setRotation(int rotation);
 
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
+  void setColorDepth(int depth);
 
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
+  void write(const lv_area_t *area, lv_color_t *color_p);
 
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
+  bool getTouch(uint16_t& x, uint16_t& y);
+
+private:
+  LGFX lcd;
 };
 
-#ifdef __cplusplus
+inline void Lcd::setRotation(int rotation) {
+  lcd.setRotation(rotation);
 }
-#endif
 
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+inline void Lcd::setColorDepth(int depth) {
+  lcd.setColorDepth(depth);
+}
+
+inline bool Lcd::getTouch(uint16_t& x, uint16_t& y) {
+  return lcd.getTouch(&x, &y);
+}
+
+} // namespace ship
+
+#endif // __LCD_HPP

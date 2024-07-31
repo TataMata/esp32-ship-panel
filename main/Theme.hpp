@@ -22,38 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef __THEME_HPP
+#define __THEME_HPP
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+#include <lvgl.h>
 
-#include "esp_event.h"
-//#include "esp_timer.h"
+namespace ship {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class Theme {
+public:
+  Theme(bool isDark = true);
+  ~Theme() = default;
 
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
+  void init();
+  void setTheme(bool dark);
 
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
+  lv_color_t getColorPrimary() const { return _colorPrimary; }
+  lv_color_t getColorSecondary() const { return _colorSecondary; }
+  lv_color_t getBgColor() const { return bg_color; }
 
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
-
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
+private:
+  bool dark;
+  lv_color_t _colorPrimary;
+  lv_color_t _colorSecondary;
+  lv_color_t bg_color;
 };
 
-#ifdef __cplusplus
-}
-#endif
+} // namespace ship
 
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+#endif // __THEME_HPP

@@ -22,38 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef __DEVICE_CONF_HPP
+#define __DEVICE_CONF_HPP
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+#include "sdkconfig.h"
 
-#include "esp_event.h"
-//#include "esp_timer.h"
-
-#ifdef __cplusplus
-extern "C" {
+/********************DEVICE SELECTION ******************/
+#if defined(CONFIG_TUX_DEVICE_WT32_SC01)
+/* Enable one of the devices from below (shift to bsp selection later) */
+#include "conf_WT32SCO1.h" // WT32-SC01 (ESP32)
+#elif defined(CONFIG_TUX_DEVICE_WT32_SC01_PLUS)
+// WT32-SC01 Plus (ESP32-S3 + 8Bit Parellel) with SD Card, Audio support
+#include "conf_WT32SCO1-Plus.h"
+#elif defined(CONFIG_TUX_DEVICE_ESP32S3SPI35)
+// Makerfabs ESP32S335D (ESP32-S3 + SPI) with SD Card, Audio support
+#include "conf_Makerfabs_S3_STFT.h"
+#elif defined(CONFIG_TUX_DEVICE_ESP32S335D)
+// Makerfabs ESP32S335D (ESP32-S3 + 16Bit Parellel) with SD Card, Audio support
+#include "conf_Makerfabs_S3_PTFT.h"
+#else
+#error Unsupported device. Configure device in menuconfig
 #endif
+/********************************************************/
 
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
-
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
-
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
-
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
-};
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+#endif // __DEVICE_CONF_HPP

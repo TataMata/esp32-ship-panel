@@ -22,38 +22,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef __GUI_HPP
+#define __GUI_HPP
 
-#ifndef TUX_EVENT_SOURCE_H_
-#define TUX_EVENT_SOURCE_H_
+#include "Theme.hpp"
+#include "widgets/tux_panel.h"
+#include <loki/Singleton.h>
 
-#include "esp_event.h"
-//#include "esp_timer.h"
+namespace ship {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class GuiThread;
 
-// Declare an event base
-ESP_EVENT_DECLARE_BASE(TUX_EVENTS);        // declaration of the TUX_EVENTS family
+class Gui {
+public:
+  static Gui &instance();
 
-// declaration of the specific events under the TUX_EVENTS family
-enum {                                       
-    TUX_EVENT_DATETIME_SET,                  // Date updated through SNTP 
+  void init();
+  void show();
 
-    TUX_EVENT_OTA_STARTED,                   // Invoke OTA START
-    TUX_EVENT_OTA_IN_PROGRESS,               // OTA Progress including %
-    TUX_EVENT_OTA_ROLLBACK,                  // OTA Rollback
-    TUX_EVENT_OTA_COMPLETED,                 // OTA Completed
-    TUX_EVENT_OTA_FAILED,                    // OTA Failed
-    TUX_EVENT_OTA_ABORTED,                   // OTA Aborted
+private:
+  Gui() = default;
+  ~Gui() = default;
 
-    TUX_EVENT_WEATHER_UPDATED,  // Weather updated
-    TUX_EVENT_THEME_CHANGED,     // raised when the theme changes
-    TUX_EVENT_BRIGHTNESS_CHANGED // raised when the brightness changes
+  void setup_styles();
+  void setup_background_style();
+
+  void create_page_home(lv_obj_t *parent);
+
+  Theme theme;
+
+  std::unique_ptr<GuiThread> guiThread;
+
+  lv_obj_t *screen_container;
+  lv_obj_t *content_container;
+  lv_obj_t *panel;
+  lv_obj_t *header;
+  lv_obj_t *footer;
+  lv_obj_t *content;
+
+  lv_coord_t screen_h;
+  lv_coord_t screen_w;
+
+  lv_style_t style_content_bg;
+  lv_style_t style_ui_island;
+  friend struct Loki::CreateStatic<Gui>;
 };
 
-#ifdef __cplusplus
-}
-#endif
+} // namespace ship
 
-#endif // #ifndef TUX_EVENT_SOURCE_H_
+#endif // __GUI_HPP

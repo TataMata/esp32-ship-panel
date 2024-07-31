@@ -1,4 +1,4 @@
-menu "ESP32-TUX Configuration"
+menu "Ship-info-panel Configuration"
     menu "Device Config"
 
     choice TUX_DEVICE_SELECTED

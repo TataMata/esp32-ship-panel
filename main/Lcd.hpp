@@ -30,34 +30,12 @@ SOFTWARE.
 
 namespace ship {
 
-class Lcd {
+class Lcd : public LGFX {
 public:
   Lcd();
-  ~Lcd() = default;
-
-  void setRotation(int rotation);
-
-  void setColorDepth(int depth);
 
   void write(const lv_area_t *area, lv_color_t *color_p);
-
-  bool getTouch(uint16_t& x, uint16_t& y);
-
-private:
-  LGFX lcd;
 };
-
-inline void Lcd::setRotation(int rotation) {
-  lcd.setRotation(rotation);
-}
-
-inline void Lcd::setColorDepth(int depth) {
-  lcd.setColorDepth(depth);
-}
-
-inline bool Lcd::getTouch(uint16_t& x, uint16_t& y) {
-  return lcd.getTouch(&x, &y);
-}
 
 } // namespace ship
 

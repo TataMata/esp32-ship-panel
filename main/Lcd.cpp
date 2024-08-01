@@ -26,19 +26,19 @@ SOFTWARE.
 
 using namespace ship;
 
-Lcd::Lcd() {
-  lcd.init();    // Initialize LovyanGFX
-  lcd.initDMA(); // Init DMA
+Lcd::Lcd() : LGFX() {
+  init();    // Initialize LovyanGFX
+  initDMA(); // Init DMA
 }
 
 void Lcd::write(const lv_area_t *area, lv_color_t *color_p) {
   uint32_t w = (area->x2 - area->x1 + 1);
   uint32_t h = (area->y2 - area->y1 + 1);
 
-  lcd.startWrite();
-  lcd.setAddrWindow(area->x1, area->y1, w, h);
-  lcd.pushImageDMA(area->x1, area->y1, area->x2 - area->x1 + 1,
+  startWrite();
+  setAddrWindow(area->x1, area->y1, w, h);
+  pushImageDMA(area->x1, area->y1, area->x2 - area->x1 + 1,
                             area->y2 - area->y1 + 1,
                             (lgfx::swap565_t *)&color_p->full);
-  lcd.endWrite();
+  endWrite();
 }
